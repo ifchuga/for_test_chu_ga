@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18154661, g: 0.2271898, b: 0.3074084, a: 1}
+  m_IndirectSpecularColor: {r: 0.18154597, g: 0.22718896, b: 0.30740717, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -649,6 +649,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioClipTakeOutWeapon: {fileID: 8300000, guid: 2ae41e984ff1f3e4a840a1a46b6a8816, type: 3}
+  weaponSettings:
+    attackRate: 0.1
+    attackDistance: 30
+    isAutomaticAttack: 1
 --- !u!82 &865508045
 AudioSource:
   m_ObjectHideFlags: 0
