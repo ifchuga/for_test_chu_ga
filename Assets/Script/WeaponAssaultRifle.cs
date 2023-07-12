@@ -6,13 +6,23 @@ public class WeaponAssaultRifle : MonoBehaviour
 {
     [Header("Audio Clips")]
     [SerializeField]
-    private AudioClip      audioClipTakeOutWeapon;  // 무기 장착 사운드
+    private AudioClip              audioClipTakeOutWeapon;  // 무기 장착 사운드
 
-    private AudioSource    audioSource;             // 사운드 재생 컴포넌트
+    [Header("Weapon Setting")]
+    [SerializeField]
+    private WeaponSettings         weaponSettings;          // 무기 설정
 
+
+    private float                  lastAttackTime = 0;      // 마지막 발사시간 체크용
+
+
+    private AudioSource                audioSource;    // 사운드 재생 컴포넌트
+    private PlayerAnimatorController   animator;       // 애니매이션 재생 제어
+    
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        animator    = GetComponentInParent<PlayerAnimatorController>();
     }
 
 
@@ -23,6 +33,65 @@ public class WeaponAssaultRifle : MonoBehaviour
     }
 
 
+    public void StartWeaponAction(int type=0)
+    {
+        // 마우스 왼쪽 클릭 (공격 시작)
+        if ( type == 0 )
+        {
+            // 연속 공격
+            if ( weaponSettings.isAutomaticAttack == true )
+            {
+                StartCoroutine("OnAttackLoop");
+            }
+            // 단발 공격
+            else
+            {
+                OnAttack();
+            }
+        }
+    }
+
+
+    public void StopWeaponAction(int type=0)
+    {
+        // 마우스 왼쪽 클릭 (공격 종료)
+        if ( type == 0 )
+        {
+            StopCoroutine("OnAttackLoop");
+        }
+    }
+    
+    
+    private IEnumerator OnAttackLoop()
+    {
+        while ( true )
+        {
+            OnAttack();
+
+            yield return null;
+        }
+    }
+
+
+    public void OnAttack()
+    {
+        if ( Time.time - lastAttackTime > weaponSettings.attackRate )
+        {
+            // 뛰고있을 때는 공격할 수 없다
+            if ( animator.moveSpeed > 0.5f )
+            {
+                return;
+            }
+
+            // 공격주기가 되어야 공격할 수 있도록 하기 위해 현재 시간 저장
+            lastAttackTime = Time.time;
+
+            // 무기 애니매이션
+            animator.Play("Fire", -1, 0);
+        }
+    }
+
+    
     private void PlaySound(AudioClip clip)
     {
         audioSource.Stop();                       // 기존에 재생중인 사운드를 정지하고,
